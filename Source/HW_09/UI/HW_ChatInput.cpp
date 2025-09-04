@@ -2,7 +2,9 @@
 #include "UI/HW_ChatInput.h"
 
 #include "Components//EditableTextBox.h"
+#include "Game/HW_GameStateBase.h"
 #include "Player/HW_PlayerController.h"
+#include "Player/HW_PlayerState.h"
 
 void UHW_ChatInput::NativeConstruct()
 {
@@ -36,16 +38,25 @@ void UHW_ChatInput::NativeDestruct()
 
 void UHW_ChatInput::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
-	if (CommitMethod == ETextCommit::OnEnter)	//
+	if (CommitMethod == ETextCommit::OnEnter)	
 	{
-		UE_LOG(LogTemp, Display, TEXT("On Enter"));
+		
 		APlayerController* OwningPC = GetOwningPlayer();
 		if (IsValid(OwningPC) == true)
 		{
 			AHW_PlayerController* OwningHW_PC = Cast<AHW_PlayerController>(OwningPC);	// HW 플레이어 컨트롤러 가져오기
-			if (IsValid(OwningHW_PC) == true)
+			AHW_PlayerState* OwningHW_PS = OwningHW_PC->GetPlayerState<AHW_PlayerState>();
+			if (IsValid(OwningHW_PC) == true && IsValid(OwningHW_PS) == true)
 			{
-				UE_LOG(LogTemp, Display, TEXT("On Enter2"));
+				if (OwningHW_PS->CurrentGuessCount >= OwningHW_PS->MaxGuessCount)
+				{
+					FString OverTryMSG = OwningHW_PS->GetPlayerInfoStr() + TEXT(" Over Count ");
+					OwningHW_PC->SetChatMessageString(OverTryMSG);
+					UE_LOG(LogTemp, Error, TEXT("EnterOverCount!"));
+					return;
+				}
+
+				UE_LOG(LogTemp, Error, TEXT("OnEnter!"));
 				OwningHW_PC->SetChatMessageString(Text.ToString());
 
 				EditableTextBox_ChatInput->SetText(FText());	// 채팅 입력 후 빈 채팅으로 바꾸기

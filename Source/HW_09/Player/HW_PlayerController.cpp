@@ -63,9 +63,9 @@ void AHW_PlayerController::SetChatMessageString(const FString& InChatMSGString)
 		AHW_PlayerState* HWPS = GetPlayerState<AHW_PlayerState>();
 		if (IsValid(HWPS) == true)
 		{
-			FString CombinedMSGStr = HWPS->GetPlayerInfoStr() + TEXT(": ") + InChatMSGString;	// 플레이어 번호 + 입력 숫자 저장
+				FString CombinedMSGStr = HWPS->GetPlayerInfoStr() + TEXT(": ") + InChatMSGString;	// 플레이어 번호 + 입력 숫자 저장
 
-			ServerRPCPrintChatMSGString(CombinedMSGStr);	//ServerRPC 요청 (클라->서버)
+				ServerRPCPrintChatMSGString(CombinedMSGStr);	//ServerRPC 요청 (클라->서버)
 		}
 	}
 }
